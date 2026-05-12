@@ -44,7 +44,7 @@
     }
 
     function addSprite() {
-        const sprite = $sprites[0] || null
+        const sprite = $sprites[0].id || null
         $dialogue[current].sprites = $dialogue[current].sprites.concat([{
             location: sprite,
             x: 0,
