@@ -4,6 +4,7 @@
     import showdown from "showdown";
     import EmotionPicker from "$lib/components/EmotionPicker.svelte";
     import ScenePicker from "$lib/components/ScenePicker.svelte";
+    import StringList from "$lib/components/StringList.svelte";
     import {dialogue, emotions, markdown, settings} from "$lib/store";
     import defaultEmotions from "$lib/defaultEmotions.json";
     let current = $state(0)
@@ -58,15 +59,15 @@
         return converter.makeHtml(text)
     }
 
-    function emotion() {
+    let emotionURI = $derived((() => {
         const defaults = $settings.includeDefaults ? defaultEmotions : []
         const list = defaults.concat($emotions)
         const e = list.find(it => 
             it.id == $dialogue[current].emotion
         )
         if(e) return e.uri
-        else return ""
-    }
+        else return null
+    })())
 </script>
 
 <div class="flex">
@@ -93,7 +94,9 @@
                 <div class="dialogue">
                     {@html markdownComponent() }
                 </div>
-                <img src={ emotion() } alt="A creeper crush emotion with ID { $dialogue[current].emotion }" class="emotion" />
+                {#if emotionURI}
+                    <img src={ emotionURI } alt="A creeper crush emotion with ID { $dialogue[current].emotion }" class="emotion" />
+                {/if}
             </div>
             ID:
             <br/>
@@ -201,6 +204,23 @@
             <br/>
             <br/>
 
+            Commands
+            <br/>
+            <small>
+                These commands will be run <em>every time</em> this dialogue is opened.
+                <br/>
+                @s targets the player who opened the dialogue.
+                <br/>
+                @date targets the targeted entity.
+                <br/>
+                $date_uuid is the UUID of the targeted entity.
+                <br/>
+                $date_name is the custom name or entity name of the targeted entity.
+            </small>
+            <br/>
+            <StringList bind:value={ $dialogue[current].commands } />
+            <br/>
+            <br/>
         </div>
     {/if}
 </div>
