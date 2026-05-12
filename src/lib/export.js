@@ -72,7 +72,7 @@ export default async function() {
             change_condition: entry.change_condition,
             ends_dialogue: entry.ends_dialogue,
             commands: entry.commands,
-            requires: entry.requires,
+            requires: entry.requires.length > 0 ? entry.requires : null,
             sprites: entry.sprites,
         });
     }

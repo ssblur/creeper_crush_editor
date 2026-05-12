@@ -1,6 +1,5 @@
 <script>
     // TODO: add commands
-    // TODO: add requires
     // TODO: add sprites
     import showdown from "showdown";
     import EmotionPicker from "$lib/components/EmotionPicker.svelte";
@@ -25,6 +24,7 @@
             linked_markdown: $markdown.length,
             commands: [],
             sprites: [],
+            requires: "",
         }])
         $markdown = $markdown.concat([{
             id: `dialogue_${i}`,
@@ -190,6 +190,17 @@
             {/each}
             <br/>
             <br/>
+
+            Requires
+            <br/>
+            <small>
+                If set to a mod id, this dialogue will only be available if that mod is loaded.
+            </small>
+            <br/>
+            <input type="text" class="w-5/6" bind:value={ $dialogue[current].requires }>
+            <br/>
+            <br/>
+
         </div>
     {/if}
 </div>
