@@ -18,9 +18,13 @@ button {
     background-size: contain;
     font-family: "Minecraftia";
     color: #fff;
-    position: relative;
     height: 450px;
     width: 800px;
+    position: fixed;
+    right: 6px;
+    bottom: 0px;
+    overflow: hidden;
+    zoom: 70%;
 }
 
 .cctemplate > .dialogue {
@@ -35,4 +39,8 @@ button {
     right: 18.5%;
     height: 128px;
     width: 128px;
+}
+
+.cctemplate > .sprite {
+    position: absolute;
 }

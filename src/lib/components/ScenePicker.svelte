@@ -3,7 +3,7 @@
     let { value = $bindable({}), class: className = "" } = $props();
 </script>
 
-<select class={ className }>
+<select class={ className } bind:value={value}>
     {#each $dialogue as scene}
         <option value="{ scene.id }">{ scene.id }</option>
     {/each}

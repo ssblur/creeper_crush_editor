@@ -1,12 +1,12 @@
 <script>
-    // TODO: add commands
-    // TODO: add sprites
+    // TODO: add button rendering
     import showdown from "showdown";
     import EmotionPicker from "$lib/components/EmotionPicker.svelte";
     import ScenePicker from "$lib/components/ScenePicker.svelte";
     import StringList from "$lib/components/StringList.svelte";
-    import {dialogue, emotions, markdown, settings} from "$lib/store";
+    import {dialogue, emotions, markdown, settings, sprites} from "$lib/store";
     import defaultEmotions from "$lib/defaultEmotions.json";
+  import SpritePicker from "$lib/components/SpritePicker.svelte";
     let current = $state(0)
 
     function add() {
@@ -43,6 +43,17 @@
         $dialogue[current].condition[`condition_${i}`] = true
     }
 
+    function addSprite() {
+        const sprite = $sprites[0] || null
+        $dialogue[current].sprites = $dialogue[current].sprites.concat([{
+            location: sprite,
+            x: 0,
+            y: 0,
+            w: 64,
+            h: 64,
+        }])
+    }
+
     function addChangeCondition() {
         const options = Object.entries($dialogue[current].condition).find(e => 
             $dialogue[current].change_condition[e[0]] === undefined && e[0] != "never"
@@ -57,6 +68,15 @@
     function markdownComponent() {
         const text = $markdown[$dialogue[current].linked_markdown].text
         return converter.makeHtml(text)
+    }
+
+    function spriteURI(sprite) {
+        for(let s of $sprites) {
+            if(sprite.location == s.id) {
+                return s.uri
+            }
+        }
+        return "/missing.png"
     }
 
     let emotionURI = $derived((() => {
@@ -97,6 +117,14 @@
                 {#if emotionURI}
                     <img src={ emotionURI } alt="A creeper crush emotion with ID { $dialogue[current].emotion }" class="emotion" />
                 {/if}
+                {#each $dialogue[current].sprites as sprite}
+                    <img 
+                        src={ spriteURI(sprite) } 
+                        alt="Sprite with ID { sprite.location }" 
+                        class="sprite" 
+                        style="width:{sprite.w * 2}px;height:{sprite.h * 2}px;right:{sprite.x * 2}px;bottom:{sprite.y * 2 + 13}px;"
+                        />
+                {/each}
             </div>
             ID:
             <br/>
@@ -188,6 +216,39 @@
                     Scene:
                     <br/>
                     <ScenePicker bind:value={$dialogue[current].options[k]} class="w-5/6"></ScenePicker>
+                </div>
+                <br/>
+            {/each}
+            <br/>
+            <br/>
+
+            Sprites:
+            <button class="text-small px-1 rounded bg-blue-500 text-white" onclick={ addSprite }>+</button>
+            <br/>
+            <small>
+                Sprites rendered in the scene.
+                Statically scaled and positioned from the bottom right.
+                <br/>
+                Sprites are positioned behind the textbox, but will render over it in the preview here. Sorry :/
+            </small>
+            <br/>
+            {#each $dialogue[current].sprites as v, k}
+                <div class="pl-2 border-l-2">
+                    Sprite:
+                    <br/>
+                    <SpritePicker bind:value={$dialogue[current].sprites[k].location} class="w-5/6" />
+                    <br/>
+                    <span class="w-16 inline-block">X:</span>
+                    <input type="number" bind:value={$dialogue[current].sprites[k].x} class="w-1/3" />
+                    <br/>
+                    <span class="w-16 inline-block">Y:</span>
+                    <input type="number" bind:value={$dialogue[current].sprites[k].y} class="w-1/3" />
+                    <br/>
+                    <span class="w-16 inline-block">Width:</span>
+                    <input type="number" bind:value={$dialogue[current].sprites[k].w} class="w-1/3" />
+                    <br/>
+                    <span class="w-16 inline-block">Height:</span>
+                    <input type="number" bind:value={$dialogue[current].sprites[k].h} class="w-1/3" />
                 </div>
                 <br/>
             {/each}
