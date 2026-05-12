@@ -4,9 +4,20 @@
 
     function add() {
         $sprites = $sprites.concat([{
-            id: $settings.namespace + ":sprite_" + $sprites.length,
+            id: "sprite_" + $sprites.length,
             uri: ""
         }])
+    }
+
+    function updateURI(event) {
+        const file = event.target.files[0]
+        const reader = new FileReader()
+
+        reader.onload = () => {
+            $sprites[current].uri = reader.result
+        }
+
+        reader.readAsDataURL(file)
     }
 </script>
 
@@ -41,7 +52,18 @@
         <div class="grow bg-yellow-50">
             ID: <input type="text" class="w-1/2" bind:value={ $sprites[current].id }>
             <br/>
-            Uploading files is not yet supported, sorry!
+            <br/>
+
+            Upload: 
+            <input type="file" onchange={ updateURI } accept=".png" class="border-2" />
+            <br/>
+            <br/>
+
+            <img 
+                src={$sprites[current].uri} 
+                style="width: 128px; height: 128px; overflow: hidden;" 
+                class="bg-yellow-200" 
+                alt="emotion sprite for {$sprites[current].id}"/>
         </div>
     {/if}
 </div>

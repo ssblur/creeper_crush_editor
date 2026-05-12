@@ -1,0 +1,14 @@
+[
+    {
+        "id": "creeper_crush:none",
+        "uri": ""
+    },
+    {
+        "id": "creeper_crush:blush",
+        "uri": "/emotion/blush.png"
+    },
+    {
+        "id": "creeper_crush:happy",
+        "uri": "/emotion/happy.png"
+    }
+]

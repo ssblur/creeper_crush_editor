@@ -3,14 +3,11 @@
     import Settings from "$lib/pages/Settings.svelte"
     import Emotions from "$lib/pages/Emotions.svelte"
     import Sprites from "$lib/pages/Sprites.svelte"
+    import exportPacks from "$lib/export"
 
     let tab = $state("settings")
 
     import { settings, dialogue, markdown, sprites, emotions } from "$lib/store";
-
-    function exportPacks() {
-        alert("Unfinished")
-    }
 </script>
 
 <style>

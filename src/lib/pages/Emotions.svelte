@@ -4,9 +4,20 @@
 
     function add() {
         $emotions = $emotions.concat([{
-            id: $settings.namespace + ":custom_emotion_" + $emotions.length,
+            id: "custom_emotion_" + $emotions.length,
             uri: ""
         }])
+    }
+
+    function updateURI(event) {
+        const file = event.target.files[0]
+        const reader = new FileReader()
+
+        reader.onload = () => {
+            $emotions[current].uri = reader.result
+        }
+
+        reader.readAsDataURL(file)
     }
 </script>
 
@@ -41,7 +52,13 @@
         <div class="grow bg-yellow-50">
             ID: <input type="text" class="w-1/2" bind:value={ $emotions[current].id }>
             <br/>
-            Uploading files is not yet supported, sorry!
+            <br/>
+
+            Upload: 
+            <input type="file" onchange={ updateURI } accept=".png" class="border-2" />
+            <br/>
+            <br/>
+
             <img 
                 src={$emotions[current].uri} 
                 style="width: 128px; height: 128px; overflow: hidden;" 

@@ -1,30 +1,37 @@
 <script>
-  import EmotionPicker from "$lib/components/EmotionPicker.svelte";
-  import ScenePicker from "$lib/components/ScenePicker.svelte";
-    import {dialogue, markdown, settings} from "$lib/store"
+    // TODO: add commands
+    // TODO: add requires
+    // TODO: add sprites
+    import showdown from "showdown";
+    import EmotionPicker from "$lib/components/EmotionPicker.svelte";
+    import ScenePicker from "$lib/components/ScenePicker.svelte";
+    import {dialogue, emotions, markdown, settings} from "$lib/store";
+    import defaultEmotions from "$lib/defaultEmotions.json";
     let current = $state(0)
 
     function add() {
         const i = $dialogue.length
         $dialogue = $dialogue.concat([{
-            id: `${$settings.namespace}:scene_${i}`,
+            id: `scene_${i}`,
             entity: "minecraft:creeper",
             condition: {
                 never: true
             },
-            dialogue: `${$settings.namespace}:dialogue_${i}`,
+            dialogue: `dialogue_${i}`,
             options: {},
             emotion: null,
             change_condition: {},
             ends_dialogue: false,
-            linked_markdown: $markdown.length
+            linked_markdown: $markdown.length,
+            commands: [],
+            sprites: [],
         }])
         $markdown = $markdown.concat([{
-            id: `${$settings.namespace}:dialogue_${i}`,
+            id: `dialogue_${i}`,
             text: "**Test dialogue please ignore**"
         }])
     }
-    
+
     function addOption() {
         const i = Object.entries($dialogue[current].options).length
         $dialogue[current].options[`Option ${i}`] = $dialogue[0].id
@@ -43,6 +50,22 @@
         if(options != undefined && options.length > 0) i = options[0]
         else i = `condition_${Object.entries($dialogue[current].change_condition).length}`
         $dialogue[current].change_condition[i] = true
+    }
+
+    const converter = new showdown.Converter()
+    function markdownComponent() {
+        const text = $markdown[$dialogue[current].linked_markdown].text
+        return converter.makeHtml(text)
+    }
+
+    function emotion() {
+        const defaults = $settings.includeDefaults ? defaultEmotions : []
+        const list = defaults.concat($emotions)
+        const e = list.find(it => 
+            it.id == $dialogue[current].emotion
+        )
+        if(e) return e.uri
+        else return ""
     }
 </script>
 
@@ -66,6 +89,12 @@
     </div>
     {#if $dialogue[current]}
         <div class="grow bg-yellow-50">
+            <div class="cctemplate ml-8 mt-4">
+                <div class="dialogue">
+                    {@html markdownComponent() }
+                </div>
+                <img src={ emotion() } alt="A creeper crush emotion with ID { $dialogue[current].emotion }" class="emotion" />
+            </div>
             ID:
             <br/>
             <input type="text" class="w-5/6" bind:value={ $dialogue[current].id }>
